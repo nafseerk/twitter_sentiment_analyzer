@@ -56,6 +56,10 @@ class TweetExtractor:
         # This line filter Twitter Streams to capture data by the keywords
         stream.filter(track=keywords)
 
+    def extract_previous_tweets(self, eoi, keywords, start_date_time, end_date_time):
+        # TODO - add code to fetch all tweets from start_date_time to end_date_time on the keywords
+        pass
+
 
 if __name__ == '__main__':
 
