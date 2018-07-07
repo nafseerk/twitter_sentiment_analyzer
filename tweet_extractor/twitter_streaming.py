@@ -41,7 +41,6 @@ class TweetExtractor:
             try:
                 with open(self.output_file_name, 'a') as out_file:
                     out_file.write(data)
-                    out_file.write('\n')
 
                 self.tweet_count += 1
 
@@ -170,6 +169,6 @@ if __name__ == '__main__':
 
     # Run either extract_live_tweets (blocking call) OR extract_historic_tweets
 
-    # tweet_extractor.extract_live_tweets(keywords)
+    tweet_extractor.extract_live_tweets(keywords)
 
-    tweet_extractor.extract_historic_tweets(keywords)
+    # tweet_extractor.extract_historic_tweets(keywords)
