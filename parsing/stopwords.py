@@ -1,0 +1,4 @@
+
+STOPWORDS = {
+    'rt'
+}
