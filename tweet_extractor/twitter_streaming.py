@@ -9,9 +9,6 @@ from tweepy import OAuthHandler, AppAuthHandler
 from tweepy import Stream, API
 from tweepy import TweepError
 
-# TODO - add code to filter only the tweets that have location
-# TODO - add code to send json stream to socket
-
 
 class TweetExtractor:
 
