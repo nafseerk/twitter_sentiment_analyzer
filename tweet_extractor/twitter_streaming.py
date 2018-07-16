@@ -59,7 +59,7 @@ class TweetExtractor:
 
                 # Write tweets to file or socket
                 if self.output_file_name:
-                    with open(self.output_file_name, 'a') as out_file:
+                    with open(self.output_file_name, 'a', encoding='utf-8') as out_file:
                         out_file.write(data)
                 elif self.output_socket:
                     self.output_socket.send(data)
@@ -146,7 +146,7 @@ class TweetExtractor:
 
         # Execute the search query (tweets_per_query at a time)
         tweet_count = 0
-        with open(output_file, 'w') as out_file:
+        with open(output_file, 'w', encoding='utf-8') as out_file:
             while tweet_count < max_tweets:
                 try:
                     if max_id <= 0:
