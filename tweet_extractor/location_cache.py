@@ -22,3 +22,14 @@ def save_location_cache(location_cache):
 if __name__ == '__main__':
 
     location_cache = get_location_cache()
+    print('Size of Cache =',len(location_cache))
+
+    count = 0
+    for key in location_cache.keys():
+        location = location_cache[key]
+        if location[0] is None or location[1] is None:
+            count += 1
+            del location_cache[key]
+
+    print('Size of Cache = {0}, Removed {1} invalid entries'.format(len(location_cache), count))
+    save_location_cache(location_cache)

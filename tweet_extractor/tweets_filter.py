@@ -3,8 +3,9 @@ import datetime
 import time
 import geopy.geocoders
 from geopy.exc import GeocoderTimedOut
-from geopy.geocoders import Nominatim
 from tweet_extractor.location_cache import get_location_cache, save_location_cache
+from geocoder.geocoder import Geocoder
+
 
 # Set timeout period for Geocoder API
 geopy.geocoders.options.default_timeout = 7
@@ -50,20 +51,18 @@ def get_required_fields(input_json_string, location_cache):
                 out_json['longitude'] = location_cache[twitter_location][1]
             else:
                 print('Location not cached. Fetching from GeoCoder')
-                geo_locator = Nominatim()
+                geocoder = Geocoder()
 
                 try:
-                    location = geo_locator.geocode(twitter_location)
-                    print('Geocoder returned ({0}, {1}) for location {2}'.format(location.latitude,
-                                                                                 location.longitude,
-                                                                                 twitter_location))
-                    # Sleeping to prevent HTTP Rate limiting by GeoCoder
-                    time.sleep(10)
+                    location = geocoder.geocode(twitter_location)
 
                     # If geocoder didn't find location, return None
                     if not location:
                         return None
-                    location_cache[twitter_location] = (location.latitude, location.longitude)
+                    print('Geocoder returned ({0}, {1}) for location {2}'.format(location[0],
+                                                                                 location[1],
+                                                                                 twitter_location))
+                    location_cache[twitter_location] = (location[0], location[0])
                     out_json['latitude'] = location_cache[twitter_location][0]
                     out_json['longitude'] = location_cache[twitter_location][1]
 
@@ -106,7 +105,6 @@ def filter_tweets(input_file):
     filter_tweet_count = 0
     for i, tweet in enumerate(open(input_file, 'r', encoding='utf-8')):
         filtered_tweet = get_required_fields(tweet, location_cache)
-        print(filtered_tweet)
         if filtered_tweet is not None:
             results.append(filtered_tweet)
             filter_tweet_count += 1
@@ -133,5 +131,5 @@ def filter_tweets(input_file):
 
 
 if __name__ == '__main__':
-    raw_twitter_data_file = '/Users/apple/twitter_data/TRUDEUA/2018-07-10_historic.json'
+    raw_twitter_data_file = '/Users/apple/twitter_data/FIFA2018/2018-07-09_historic.json'
     filter_tweets(raw_twitter_data_file)
