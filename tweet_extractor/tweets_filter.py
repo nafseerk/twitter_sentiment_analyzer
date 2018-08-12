@@ -6,12 +6,14 @@ from geopy.exc import GeocoderTimedOut
 from tweet_extractor.location_cache import get_location_cache, save_location_cache
 from geocoder.geocoder import Geocoder
 
-
 # Set timeout period for Geocoder API
 geopy.geocoders.options.default_timeout = 7
 
 # For duplicate checking of tweets
 unique_tweets = {}
+
+# round-robin rate-respecting Geocoder
+geocoder = Geocoder()
 
 
 # Convert twitter date to posix timestamp
@@ -34,9 +36,16 @@ def get_required_fields(input_json_string, location_cache):
         return None
     unique_tweets[in_json['id']] = True
 
-    try:
-        out_json = {'id': in_json['id']}
+    # Ignore non-English tweets
+    if in_json['lang'] != 'en':
+        return None
 
+    out_json = {'id': in_json['id'],
+                'lang': in_json['lang'],
+                'text': in_json['text']
+                }
+
+    try:
         # Find latitude and longitude from user location field
         if in_json['user']['location']:
             twitter_location = in_json['user']['location']
@@ -51,7 +60,6 @@ def get_required_fields(input_json_string, location_cache):
                 out_json['longitude'] = location_cache[twitter_location][1]
             else:
                 print('Location not cached. Fetching from GeoCoder')
-                geocoder = Geocoder()
 
                 try:
                     location = geocoder.geocode(twitter_location)
@@ -59,10 +67,9 @@ def get_required_fields(input_json_string, location_cache):
                     # If geocoder didn't find location, return None
                     if not location:
                         return None
-                    print('Geocoder returned ({0}, {1}) for location {2}'.format(location[0],
-                                                                                 location[1],
-                                                                                 twitter_location))
-                    location_cache[twitter_location] = (location[0], location[0])
+
+                    location_cache[twitter_location] = (location[0], location[1])
+                    location_cache[twitter_location] = (location[0], location[1])
                     out_json['latitude'] = location_cache[twitter_location][0]
                     out_json['longitude'] = location_cache[twitter_location][1]
 
@@ -76,10 +83,6 @@ def get_required_fields(input_json_string, location_cache):
 
         # Convert twitter date to timestamp
         out_json['timestamp'] = get_timestamp_from_date(in_json['created_at'])
-
-        # filter tweet text and language
-        out_json['lang'] = in_json['lang']
-        out_json['text'] = in_json['text']
 
     except (KeyError, GeocoderTimedOut) as e:
         print('Exception while filtering tweet:', str(e))
@@ -131,5 +134,5 @@ def filter_tweets(input_file):
 
 
 if __name__ == '__main__':
-    raw_twitter_data_file = '/Users/apple/twitter_data/FIFA2018/2018-07-09_historic.json'
+    raw_twitter_data_file = '/Users/apple/twitter_data/TRUDEUA/2018-07-10_historic.json'
     filter_tweets(raw_twitter_data_file)
