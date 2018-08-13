@@ -41,6 +41,20 @@ class LanguageParser:
 
         return ' '.join(tokens)
 
+    def parse_datapoint(self, datapoint):
+
+        if datapoint is None:
+            return None
+
+        # Convert data to JSON object
+        data_json = json.loads(datapoint)
+
+        if data_json['lang'] == 'en':
+            parsed_text = self.parse(data_json['text'])
+            data_json['text'] = parsed_text
+
+        return json.dumps(data_json)
+
     def parse_tweets(self, input_file):
 
         # Assumes that the input_file has .json extension

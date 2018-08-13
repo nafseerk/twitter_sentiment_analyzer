@@ -91,6 +91,23 @@ def get_required_fields(input_json_string, location_cache):
     return json.dumps(out_json)
 
 
+def filter_datapoint(datapoint):
+
+    if datapoint is None:
+        return None
+
+    # Load the location_cache if exists
+    location_cache = get_location_cache()
+
+    # Filter only the relevant fields
+    filtered_datapoint = get_required_fields(datapoint, location_cache)
+
+    # Save location cache to file
+    save_location_cache(location_cache)
+
+    return filtered_datapoint
+
+
 # Filter all raw tweets in a file
 def filter_tweets(input_file):
 

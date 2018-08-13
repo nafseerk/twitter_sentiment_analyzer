@@ -30,6 +30,28 @@ class SentimentAnalyzer:
         else:
             return 0
 
+    def score_datapoint(self, datapoint):
+
+        if datapoint is None:
+            return None
+
+        # Convert datapoint to JSON object
+        data_json = json.loads(datapoint)
+
+        # Get the score of the datapoint if possible
+        score = None
+        if data_json and 'text' in data_json and 'lang' in data_json:
+            score = self.get_sentiment_score(data_json['text'], data_json['lang'])
+
+        output = (str(data_json['id']) + ',' +
+                  str(score) + ',' +
+                  str(data_json['latitude']) + ',' +
+                  str(data_json['longitude']) + ',' +
+                  str(data_json['timestamp'])
+                  )
+
+        return output
+
     # Score all the datapoints in the given file and save to output file
     def score_datapoints(self, input_file):
 

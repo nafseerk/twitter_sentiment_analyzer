@@ -1,0 +1,1 @@
+{"id": 1016572533208858625, "lang": "en", "text": "get etc errrbody ready mueller", "latitude": 39.7837304, "longitude": -100.4458825, "timestamp": 1531219153}
