@@ -74,8 +74,8 @@ class SentimentAnalyzer:
                     if score is not None:
                         out_file.write(str(line_json['id']) + ',' +
                                        str(score) + ',' +
-                                       str(line_json['latitude']) + ',' +
-                                       str(line_json['longitude']) + ',' +
+                                       str(round(line_json['latitude'], 3)) + ',' +
+                                       str(round(line_json['longitude'], 3)) + ',' +
                                        str(line_json['timestamp']) + '\n'
                                        )
                         scored_count += 1
