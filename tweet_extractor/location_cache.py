@@ -4,19 +4,19 @@ import pickle
 location_cache_file = './location_cache.pickle'
 
 
-def get_location_cache():
+def get_location_cache(file_loc=location_cache_file):
 
     location_cache = {}
-    if os.path.exists(location_cache_file):
-        location_cache = pickle.load(open(location_cache_file, "rb"))
+    if os.path.exists(file_loc):
+        location_cache = pickle.load(open(file_loc, "rb"))
 
     print('Cache Size', len(location_cache))
 
     return location_cache
 
 
-def save_location_cache(location_cache):
-    pickle.dump(location_cache, open(location_cache_file, "wb"))
+def save_location_cache(location_cache, file_loc=location_cache_file):
+    pickle.dump(location_cache, open(file_loc, "wb"))
 
 
 if __name__ == '__main__':

@@ -45,8 +45,8 @@ class SentimentAnalyzer:
 
         output = (str(data_json['id']) + ',' +
                   str(score) + ',' +
-                  str(data_json['latitude']) + ',' +
-                  str(data_json['longitude']) + ',' +
+                  str(round(data_json['latitude'], 3)) + ',' +
+                  str(round(data_json['longitude'], 3)) + ',' +
                   str(data_json['timestamp'])
                   )
 

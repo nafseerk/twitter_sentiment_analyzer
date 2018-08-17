@@ -9,9 +9,6 @@ from geocoder.geocoder import Geocoder
 # Set timeout period for Geocoder API
 geopy.geocoders.options.default_timeout = 7
 
-# For duplicate checking of tweets
-unique_tweets = {}
-
 # round-robin rate-respecting Geocoder
 geocoder = Geocoder()
 
@@ -29,12 +26,6 @@ def get_required_fields(input_json_string, location_cache):
 
     # JSON string to JSON object
     in_json = json.loads(input_json_string)
-
-    # Duplicate checking for tweets
-    if in_json['id'] in unique_tweets:
-        print('Duplicate tweet. Ignoring')
-        return None
-    unique_tweets[in_json['id']] = True
 
     # Ignore non-English tweets
     if in_json['lang'] != 'en':
@@ -91,19 +82,13 @@ def get_required_fields(input_json_string, location_cache):
     return json.dumps(out_json)
 
 
-def filter_datapoint(datapoint):
+def filter_datapoint(datapoint, location_cache):
 
     if datapoint is None:
         return None
 
-    # Load the location_cache if exists
-    location_cache = get_location_cache()
-
     # Filter only the relevant fields
     filtered_datapoint = get_required_fields(datapoint, location_cache)
-
-    # Save location cache to file
-    save_location_cache(location_cache)
 
     return filtered_datapoint
 
