@@ -31,7 +31,7 @@ parser = LanguageParser('en')
 parsed_datapoints = filtered_datapoints.map(parser.parse_datapoint)
 print('Total number of parsed datapoints = ', parsed_datapoints.count())
 
-# Stage 2 - Sentiment analyzing datapoints
+# Stage 3 - Sentiment analyzing datapoints
 sentiment_analyzer = SentimentAnalyzer()
 scored_datapoints = parsed_datapoints.map(sentiment_analyzer.score_datapoint)
 print('Total number of scored datapoints = ', scored_datapoints.count())
