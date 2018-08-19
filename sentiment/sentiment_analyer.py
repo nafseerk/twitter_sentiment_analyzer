@@ -1,5 +1,6 @@
 import json
 from nltk.sentiment.vader import SentimentIntensityAnalyzer
+from tweet_extractor.location_cache import *
 
 
 class SentimentAnalyzer:
@@ -58,10 +59,13 @@ class SentimentAnalyzer:
         # Assumes that the input_file has .json extension
         output_file = input_file[:-5] + '_scored.csv'
 
+        # Local cache that stores lat_long to country mapping
+        reverse_cache = get_reverse_location_cache()
+
         with open(output_file, 'w') as out_file:
 
             # Write file header
-            out_file.write('id,score,latitude,longitude,timestamp\n')
+            out_file.write('id,score,latitude,longitude,timestamp,country_name,country_code\n')
 
             scored_count = 0
             for i, line in enumerate(open(input_file, 'r', encoding='utf-8')):
@@ -71,12 +75,21 @@ class SentimentAnalyzer:
                 # Get the score of the datapoint if possible
                 if line_json and 'text' in line_json and 'lang' in line_json:
                     score = self.get_sentiment_score(line_json['text'], line_json['lang'])
-                    if score is not None:
+
+                    # Get country details
+                    lat_long = str(round(line_json['latitude'], 3)) + ', ' + str(round(line_json['longitude'], 3))
+                    country_name = None
+                    country_code = None
+                    if lat_long in reverse_cache:
+                        country_name, country_code = reverse_cache[lat_long]
+                        
+                    if score is not None and country_name is not None and country_code is not None:
                         out_file.write(str(line_json['id']) + ',' +
                                        str(score) + ',' +
                                        str(round(line_json['latitude'], 3)) + ',' +
                                        str(round(line_json['longitude'], 3)) + ',' +
-                                       str(line_json['timestamp']) + '\n'
+                                       str(line_json['timestamp']) + ',' +
+                                       country_name + ',' + country_code + '\n'
                                        )
                         scored_count += 1
                         
@@ -87,7 +100,7 @@ class SentimentAnalyzer:
 
 
 if __name__ == '__main__':
-    parsed_data_file = '/Users/apple/twitter_data/FIFA2018/2018-07-09_historic_filtered_parsed.json'
+    parsed_data_file = '/Users/apple/twitter_data/TRADEWAR/2018-07-10_historic_filtered_parsed.json'
 
     # Create Sentiment Analyzer
     sentiment_analyzer = SentimentAnalyzer()
